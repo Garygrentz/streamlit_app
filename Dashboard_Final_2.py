@@ -131,34 +131,40 @@ if choice=="Todos":
     st.plotly_chart(fig, config=config)
 
 elif choice=="Ubicación":
-    #pass
     # Ordena dataframe
     dfCentros.sort_values(["departamento","provincia","distrito","nombre"],inplace=True)
 
     dep_list = dfCentros["departamento"].unique().tolist()
-    selected_dep = st.sidebar.selectbox("Departamento", dep_list,index=dep_list.index("LIMA"))
+    selected_dep = st.sidebar.selectbox("Departamento", dep_list, index=dep_list.index("LIMA") if "LIMA" in dep_list else 0)
 
-    df_tmp = dfCentros[(dfCentros["departamento"]==selected_dep)]
+    df_tmp = dfCentros[dfCentros["departamento"]==selected_dep]
     prov_list = df_tmp["provincia"].unique().tolist()
-    selected_prov = st.sidebar.selectbox("Provincia", prov_list, index=prov_list.index("LIMA"))    
+    selected_prov = st.sidebar.selectbox("Provincia", prov_list, index=prov_list.index("LIMA") if "LIMA" in prov_list else 0)
 
-    df_tmp = dfCentros[(dfCentros["departamento"]==selected_dep) & (dfCentros["provincia"]==selected_prov) ]
+    df_tmp = dfCentros[(dfCentros["departamento"]==selected_dep) & (dfCentros["provincia"]==selected_prov)]
     dist_list = df_tmp["distrito"].unique().tolist()
-    selected_dist = st.sidebar.selectbox("Distrito", dist_list, index=dist_list.index("LIMA"))
 
-    with st.expander("Ver datos"):
-        df = dfCentros[(dfCentros["departamento"]==selected_dep) & (dfCentros["provincia"]==selected_prov) & (dfCentros["distrito"]==selected_dist) ]
-        df.reset_index(inplace=True, drop=True)
-        st.dataframe(df)
+    if not dist_list:  # Verifica si dist_list está vacía
+        st.warning("No hay distritos disponibles para la provincia seleccionada.")
+    else:
+        default_index = dist_list.index("LIMA") if "LIMA" in dist_list else 0
+        selected_dist = st.sidebar.selectbox("Distrito", dist_list, index=default_index)
 
-    fig = px.scatter_mapbox(df, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
-                             color_discrete_sequence=[color], zoom=14, height=700)
-    fig.update_traces(marker=dict(size=10,color=color,opacity=0.9))
-    fig.update_layout(mapbox_style="open-street-map",
-        paper_bgcolor="#e6f2ff",
-        plot_bgcolor="#e6f2ff"        
-        )
-    st.plotly_chart(fig, config=config)
+        with st.expander("Ver datos"):
+            df = dfCentros[(dfCentros["departamento"]==selected_dep) & 
+                           (dfCentros["provincia"]==selected_prov) & 
+                           (dfCentros["distrito"]==selected_dist)]
+            df.reset_index(inplace=True, drop=True)
+            st.dataframe(df)
+
+        fig = px.scatter_mapbox(df, lat="latitud", lon="longitud", hover_name="nombre", 
+                                hover_data=["departamento","provincia","distrito"],
+                                color_discrete_sequence=[color], zoom=14, height=700)
+        fig.update_traces(marker=dict(size=10, color=color, opacity=0.9))
+        fig.update_layout(mapbox_style="open-street-map",
+                          paper_bgcolor="#e6f2ff",
+                          plot_bgcolor="#e6f2ff")
+        st.plotly_chart(fig, config=config)
 
 elif choice=="Personalizado (Distritos)":
     # Ordena dataframe
