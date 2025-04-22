@@ -114,16 +114,10 @@ if choice=="Todos":
         st.dataframe(dfCentros)
 
     fig = px.scatter_mapbox(dfCentros, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
-        color_discrete_sequence=[color], zoom=4, height=700)
-    # Ordena dataframe
-    dfCentros.sort_values(["departamento","provincia","distrito","nombre"],inplace=True)
-
-    with st.expander("Ver datos"):
-        dfCentros.reset_index(inplace=True, drop=True)
-        st.dataframe(dfCentros)
-
-    fig = px.scatter_mapbox(dfCentros, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
                              color_discrete_sequence=[color], zoom=4, height=700, text='nombre')
+    # Cambio el tamaño de los puntos
+    fig.update_traces(marker=dict(size=10,color=color,opacity=0.9))
+    # Cambio el color del contenedor del gráfico
     fig.update_layout(mapbox_style="open-street-map",
         paper_bgcolor="#e6f2ff",
         plot_bgcolor="#e6f2ff"        
@@ -154,7 +148,9 @@ elif choice=="Ubicación":
 
     fig = px.scatter_mapbox(df, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
                              color_discrete_sequence=[color], zoom=14, height=700)
-    fig.update_traces(marker=dict(size=10,color=color,opacity=0.9))
+    # Cambio el tamaño de los puntos
+    fig.update_traces(marker=dict(size=15,color=color,opacity=0.8))
+    # Cambio el color del contenedor del gráfico
     fig.update_layout(mapbox_style="open-street-map",
         paper_bgcolor="#e6f2ff",
         plot_bgcolor="#e6f2ff"        
@@ -174,7 +170,9 @@ elif choice=="Personalizado (Distritos)":
 
     fig = px.scatter_mapbox(gdf, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
                              color_discrete_sequence=[color], zoom=14, height=700)
-    fig.update_traces(marker=dict(size=10,color=color,opacity=0.9))
+    # Cambio el tamaño de los puntos
+    fig.update_traces(marker=dict(size=15,color=color,opacity=0.9))
+    # Cambio el color del contenedor del gráfico
     fig.update_layout(mapbox_style="open-street-map",
         paper_bgcolor="#e6f2ff",
         plot_bgcolor="#e6f2ff"        
@@ -194,7 +192,9 @@ elif choice=="Centro de Vacunación":
 
     fig = px.scatter_mapbox(gdf, lat="latitud", lon="longitud", hover_name="nombre", hover_data=["departamento","provincia","distrito"],
                              color_discrete_sequence=[color], zoom=14, height=700)
-    fig.update_traces(marker=dict(size=10,color=color,opacity=0.9))
+    # Cambio el tamaño de los puntos
+    fig.update_traces(marker=dict(size=15,color=color,opacity=0.9))
+    # Cambio el color del contenedor del gráfico
     fig.update_layout(mapbox_style="open-street-map",
         paper_bgcolor="#e6f2ff",
         plot_bgcolor="#e6f2ff"        
